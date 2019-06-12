@@ -644,7 +644,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       disp += ' (';
       let hassomething = false;
       if (this.panel.showLegendTime) {
-        disp += this.formatDuration(moment.duration(info.ms));
+        disp += this.getLegendTime(info);
         hassomething = true;
       }
 
@@ -663,7 +663,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
             dec = 0;
           }
         }
-        disp += kbn.valueFormats.percentunit(info.per, dec);
+        disp += this.getLegendPercent(info, metric);
         hassomething = true;
       }
 
@@ -671,11 +671,33 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
         if (hassomething) {
           disp += ', ';
         }
-        disp += info.count + 'x';
+        disp += this.getLegendCounts(info);
       }
       disp += ')';
     }
     return disp;
+  }
+
+  getLegendTime(info) {
+    return this.formatDuration(moment.duration(info.ms));
+  }
+
+  getLegendPercent(info, metric) {
+    let dec = this.panel.legendPercentDecimals;
+    if (_.isNil(dec)) {
+      if (info.per > 0.98 && metric.changes.length > 1) {
+        dec = 2;
+      } else if (info.per < 0.02) {
+        dec = 2;
+      } else {
+        dec = 0;
+      }
+    }
+    return kbn.valueFormats.percentunit(info.per, dec);
+  }
+
+  getLegendCounts(info) {
+    return info.count + 'x';
   }
 
   //------------------

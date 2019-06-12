@@ -2,9 +2,36 @@
     <div class="canvas-spot" style="width:100%;"></div>
 
     <div ng-show="ctrl.panel.showLegend">
-        <div ng-repeat="metric in ctrl.legend">
-            <span ng-show="ctrl.panel.showLegendNames">{{ metric.name }}: </span>
-            <div ng-show="ctrl.panel.showLegendValues"
+        <div ng-repeat="metric in ctrl.legend" style="display: flex">
+            <span ng-show="ctrl.panel.showLegendNames" style="margin-left: 1em; margin-right: 1em">{{ metric.name }}: </span>
+            <table class="graph-legend-content graph-legend-table" ng-show="ctrl.panel.alignAsTable" style="margin-top:0.3em">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th ng-if="ctrl.panel.showLegendTime">Time</th>
+                        <th ng-if="ctrl.panel.showLegendPercent">Percent</th>
+                        <th ng-if="ctrl.panel.showLegendCounts">Counts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        ng-repeat="info in metric.legendInfo | orderBy:ctrl.panel.legendSortBy | limitTo:ctrl.panel.legendMaxValues"
+                        style="cursor: default; margin-right:15px;"
+                        ng-mousemove="ctrl.showLegandTooltip($event, info);"
+                        ng-mouseleave="ctrl.clearTT()">
+                        <td>
+                            <div ng-style="{ 'background-color': ctrl.getColor(info.val) }" 
+                            style="width:10px; height:10px; display:inline-block;"></div>
+                            {{info.val}}
+                        </td>
+                        <td ng-if="ctrl.panel.showLegendTime">{{ctrl.getLegendTime(info)}}</td>
+                        <td ng-if="ctrl.panel.showLegendPercent">{{ctrl.getLegendPercent(info)}}</td>
+                        <td ng-if="ctrl.panel.showLegendCounts">{{ctrl.getLegendCounts(info)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div ng-show="ctrl.panel.showLegendValues && !ctrl.panel.alignAsTable"
                 ng-repeat="info in metric.legendInfo | orderBy:ctrl.panel.legendSortBy | limitTo:ctrl.panel.legendMaxValues"
                 style="cursor: default; display:inline-block; margin-right:15px;"
                 ng-mousemove="ctrl.showLegandTooltip($event, info);"
