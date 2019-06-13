@@ -3,15 +3,6 @@
     <h5 class="section-heading">Display</h5>
 
     <!--
-        <div class="gf-form">
-          <label class="gf-form-label width-7">Show</label>
-          <div class="gf-form-select-wrapper max-width-14">
-            <select class="gf-form-input" ng-model="ctrl.panel.display" ng-change="ctrl.onConfigChanged()">
-              <option value="timeline">Timeline</option>
-              <option value="stacked">Bar Chart (stacked)</option>
-            </select>
-          </div>
-        </div>
 
         <div class="gf-form" ng-show="ctrl.panel.display != 'timeline'">
           <label class="gf-form-label width-7">Sort By</label>
@@ -26,6 +17,15 @@
         </div>
       -->
 
+    <div class="gf-form">
+      <label class="gf-form-label width-14">Type</label>
+      <div class="gf-form-select-wrapper max-width-14">
+        <select class="gf-form-input" ng-model="ctrl.panel.display" ng-change="ctrl.onConfigChanged()">
+          <option value="timeline">Timeline</option>
+          <option value="piechart">PieChart</option>
+        </select>
+      </div>
+    </div>
     <div class="gf-form">
       <label class="gf-form-label width-14">Row Height</label>
       <input

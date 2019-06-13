@@ -1,5 +1,6 @@
 <div>
-    <div class="canvas-spot" style="width:100%;"></div>
+    <div ng-show="ctrl.panel.display=='timeline'" class="canvas-spot" style="width:100%;"></div>
+    <div ng-show="ctrl.panel.display=='piechart'" class="piechart-panel__chart" style="width:100%;"></div>
 
     <div ng-show="ctrl.panel.showLegend">
         <div ng-repeat="metric in ctrl.legend" style="display: flex">
