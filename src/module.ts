@@ -85,7 +85,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   static scrollable = true;
 
   defaults = {
-    display: 'timeline', // or 'stacked'
+    display: 'piechart', // or 'stacked'
     rowHeight: 50,
     valueMaps: [{value: 'null', op: '=', text: 'N/A'}],
     rangeMaps: [{from: 'null', to: 'null', text: 'N/A'}],
@@ -154,6 +154,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
   annotations: any = [];
   data: DistinctPoints[] = null;
+  pieData: any[];
   legend: DistinctPoints[] = null;
 
   externalPT = false;
@@ -174,7 +175,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
     // defaults configs
     _.defaultsDeep(this.panel, this.defaults);
-    this.panel.display = 'timeline'; // Only supported version now
+    this.panel.display = 'piechart'; // Only supported version now
 
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     this.events.on('render', this.onRender.bind(this));
@@ -227,23 +228,30 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   }
 
   onRender() {
-    if (this.data == null || !this.context) {
-      return;
+    switch(this.panel.display) {
+      case "timeline":
+
+          if (this.data == null || !this.context) {
+            return;
+          }
+      
+          this._updateRenderDimensions();
+          this._updateSelectionMatrix();
+          this._updateCanvasSize();
+          this._renderRects();
+          this._renderTimeAxis();
+          this._renderLabels();
+          this._renderAnnotations();
+          this._renderSelection();
+          this._renderCrosshair();
+      
+          this.renderingCompleted();
+
+      case "piechart":
+          
+      default:
     }
-
-    this._updateRenderDimensions();
-    this._updateSelectionMatrix();
-    this._updateCanvasSize();
-    this._renderRects();
-    this._renderTimeAxis();
-    this._renderLabels();
-    this._renderAnnotations();
-    this._renderSelection();
-    this._renderCrosshair();
-
-    this.renderingCompleted();
   }
-
   showLegandTooltip(pos, info) {
     let body = '<div class="graph-tooltip-time">' + info.val + '</div>';
 
@@ -506,7 +514,27 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
           console.log('ERRR', this);
         }
       );
+    if(this.panel.display == "piechart") {
+      let pieData = []
+      _.forEach(data, metric => {
+        if (metric.legendInfo) {
+          _.forEach(metric.legendInfo, info => {
+            if (!_.has(this.colorMap, info.val)) {
+              const entry = {
+                label: info.val,
+                data: info.per,
+                color: this.getColor(info.val)
+              }
+              pieData.push(entry);
+            }
+          });
+        }
+      });
+      this.pieData = pieData;
+      this.render(pieData);
+    }
   }
+
 
   updateLegendMetrics(notify?: boolean) {
     if (

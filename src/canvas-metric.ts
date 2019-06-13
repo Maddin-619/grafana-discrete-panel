@@ -1,5 +1,7 @@
 import {MetricsPanelCtrl} from 'app/plugins/sdk';
 
+import rendering from './rendering';
+
 import moment from 'moment';
 import $ from 'jquery';
 
@@ -148,6 +150,7 @@ export class CanvasPanelCtrl extends MetricsPanelCtrl {
   }
 
   link(scope, elem, attrs, ctrl) {
+    rendering(scope, elem, attrs, ctrl);
     this.wrap = elem.find('.canvas-spot')[0];
     this.canvas = document.createElement('canvas');
     this.wrap.appendChild(this.canvas);
