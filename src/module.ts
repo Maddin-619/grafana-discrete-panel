@@ -83,7 +83,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   static scrollable = true;
 
   defaults = {
-    display: "piechart", // or 'stacked'
+    display: "timeline", // or 'piechart'
     rowHeight: 50,
     valueMaps: [{ value: "null", op: "=", text: "N/A" }],
     rangeMaps: [{ from: "null", to: "null", text: "N/A" }],
@@ -101,6 +101,8 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     writeAllValues: false,
     writeMetricNames: false,
     showTimeAxis: true,
+    breakPoint: "50%",
+    alignAsTable: false,
     showLegend: true,
     showLegendNames: true,
     showLegendValues: true,
@@ -173,7 +175,6 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
     // defaults configs
     _.defaultsDeep(this.panel, this.defaults);
-    this.panel.display = "piechart"; // Only supported version now
 
     this.events.on("init-edit-mode", this.onInitEditMode.bind(this));
     this.events.on("render", this.onRender.bind(this));
@@ -531,25 +532,23 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
           console.log("ERRR", this);
         }
       );
-    if (this.panel.display == "piechart") {
-      let pieData = [];
-      _.forEach(data, metric => {
-        if (metric.legendInfo) {
-          _.forEach(metric.legendInfo, info => {
-            if (!_.has(this.colorMap, info.val)) {
-              const entry = {
-                label: info.val,
-                data: info.per,
-                color: this.getColor(info.val)
-              };
-              pieData.push(entry);
-            }
-          });
-        }
-      });
-      this.pieData = pieData;
-      this.render(pieData);
-    }
+    let pieData = [];
+    _.forEach(data, metric => {
+      if (metric.legendInfo) {
+        _.forEach(metric.legendInfo, info => {
+          if (!_.has(this.colorMap, info.val)) {
+            const entry = {
+              label: info.val,
+              data: info.per,
+              color: this.getColor(info.val)
+            };
+            pieData.push(entry);
+          }
+        });
+      }
+    });
+    this.pieData = pieData;
+    this.render(pieData);
   }
 
   updateLegendMetrics(notify?: boolean) {

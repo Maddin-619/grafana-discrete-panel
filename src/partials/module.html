@@ -26,7 +26,7 @@
                             {{info.val}}
                         </td>
                         <td ng-if="ctrl.panel.showLegendTime">{{ctrl.getLegendTime(info)}}</td>
-                        <td ng-if="ctrl.panel.showLegendPercent">{{ctrl.getLegendPercent(info)}}</td>
+                        <td ng-if="ctrl.panel.showLegendPercent">{{ctrl.getLegendPercent(info, metric)}}</td>
                         <td ng-if="ctrl.panel.showLegendCounts">{{ctrl.getLegendCounts(info)}}</td>
                     </tr>
                 </tbody>

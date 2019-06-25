@@ -19,6 +19,18 @@ export default function link(scope, elem, attrs, ctrl) {
     }
   });
 
+  function getLegendHeight(panelHeight) {
+    if (!ctrl.panel.showLegend) {
+      return 20;
+    } 
+    if (ctrl.panel.alignAsTable) {
+      let breakPoint = parseInt(ctrl.panel.breakPoint) / 100;
+      var total = 23 + 25 * data.length;
+      return Math.min(total, Math.floor(panelHeight * breakPoint));
+    }
+    return 23
+  }
+
   function formatter(label, slice) {
     var slice_data = slice.data[0][slice.data[0].length - 1];
     var decimal = 2;
@@ -45,8 +57,7 @@ export default function link(scope, elem, attrs, ctrl) {
 
   function addPieChart() {
     var width = elem.width();
-    var height = ctrl.height - 150;
-    console.log(ctrl.height);
+    var height = ctrl.height - getLegendHeight(ctrl.height);
 
     var size = Math.min(width, height);
 
