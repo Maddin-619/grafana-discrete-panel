@@ -24,7 +24,7 @@ export default function link(scope, elem, attrs, ctrl) {
       return 20;
     } 
     if (ctrl.panel.alignAsTable) {
-      let breakPoint = parseInt(ctrl.panel.breakPoint) / 100;
+      var breakPoint = parseInt(ctrl.panel.breakPoint) / 100;
       var total = 23 + 25 * data.length;
       return Math.min(total, Math.floor(panelHeight * breakPoint));
     }
