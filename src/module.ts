@@ -447,6 +447,15 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       dataList = initialPoints.data;
     }
 
+    const initialPoints = await this.getInitialDistinctPoints();
+    if (
+      dataList.length == 0 &&
+      initialPoints != undefined &&
+      initialPoints.data.length > 0
+    ) {
+      dataList = initialPoints.data;
+    }
+
     const data: DistinctPoints[] = [];
     _.forEach(dataList, (metric: any, index) => {
       if (metric.datapoints) {
