@@ -4737,6 +4737,11 @@ jest@24.8.0:
     import-local "^2.0.0"
     jest-cli "^24.8.0"
 
+jquery.flot@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/jquery.flot/-/jquery.flot-0.8.3.tgz#81d2ec4ffdf0dee729c8a442e8faa399e9b48207"
+  integrity sha512-/tEE8J5NjwvStHDaCHkvTJpD7wDS4hE1OEL8xEmhgQfUe0gLUem923PIceNez1mz4yBNx6Hjv7pJcowLNd+nbg==
+
 jquery@^3.2.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"

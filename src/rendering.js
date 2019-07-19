@@ -7,13 +7,15 @@ export default function link(scope, elem, attrs, ctrl) {
   elem = elem.find('.piechart-panel__chart');
   var $tooltip = $('<div id="tooltip">');
 
-  ctrl.events.on('render', function () {
-    if (ctrl.panel.display != "piechart") {
-      return
+  ctrl.events.on('render', function() {
+    if (ctrl.panel.display != 'piechart') {
+      return;
     }
     if (panel.legendType === 'Right side') {
       render(false);
-      setTimeout(function () { render(true); }, 50);
+      setTimeout(function() {
+        render(true);
+      }, 50);
     } else {
       render(true);
     }
@@ -22,29 +24,29 @@ export default function link(scope, elem, attrs, ctrl) {
   function getLegendHeight(panelHeight) {
     if (!ctrl.panel.showLegend) {
       return 20;
-    } 
+    }
     if (ctrl.panel.alignAsTable) {
       var breakPoint = parseInt(ctrl.panel.breakPoint) / 100;
       var total = 23 + 25 * data.length;
       return Math.min(total, Math.floor(panelHeight * breakPoint));
     }
-    return 23
+    return 23;
   }
 
   function formatter(label, slice) {
     var slice_data = slice.data[0][slice.data[0].length - 1];
     var decimal = 2;
-    var start = "<div style='font-size:" + ctrl.panel.fontSize + ";text-align:center;padding:2px;color:" + slice.color + ";'>" + label + "<br/>";
+    var start = "<div style='font-size:" + ctrl.panel.fontSize + ';text-align:center;padding:2px;color:' + slice.color + ";'>" + label + '<br/>';
 
     if (ctrl.panel.legend.percentageDecimals) {
       decimal = ctrl.panel.legend.percentageDecimals;
     }
     if (ctrl.panel.legend.values && ctrl.panel.legend.percentage) {
-      return start + ctrl.formatValue(slice_data) + "<br/>" + slice.percent.toFixed(decimal) + "%</div>";
+      return start + ctrl.formatValue(slice_data) + '<br/>' + slice.percent.toFixed(decimal) + '%</div>';
     } else if (ctrl.panel.legend.values) {
-      return start + ctrl.formatValue(slice_data) + "</div>";
+      return start + ctrl.formatValue(slice_data) + '</div>';
     } else if (ctrl.panel.legend.percentage) {
-      return start + slice.percent.toFixed(decimal) + "%</div>";
+      return start + slice.percent.toFixed(decimal) + '%</div>';
     } else {
       return start + '</div>';
     }
@@ -71,36 +73,36 @@ export default function link(scope, elem, attrs, ctrl) {
 
     plotCanvas.css(plotCss);
 
-    var backgroundColor = $('body').css('background-color')
+    var backgroundColor = $('body').css('background-color');
 
     var options = {
       legend: {
-        show: false
+        show: false,
       },
       series: {
         pie: {
           show: true,
           stroke: {
             color: backgroundColor,
-            width: parseFloat(1).toFixed(1)
+            width: parseFloat(1).toFixed(1),
           },
           label: {
             show: false,
-            formatter: formatter
+            formatter: formatter,
           },
           highlight: {
-            opacity: 0.0
+            opacity: 0.0,
           },
           combine: {
             threshold: 0.0,
-            label: 'Others'
-          }
-        }
+            label: 'Others',
+          },
+        },
       },
       grid: {
         hoverable: true,
-        clickable: false
-      }
+        clickable: false,
+      },
     };
 
     if (panel.pieType === 'donut') {
@@ -112,7 +114,7 @@ export default function link(scope, elem, attrs, ctrl) {
     elem.html(plotCanvas);
 
     $.plot(plotCanvas, data, options);
-    plotCanvas.bind("plothover", function (event, pos, item) {
+    plotCanvas.bind('plothover', function(event, pos, item) {
       if (!item) {
         $tooltip.detach();
         return;
@@ -123,27 +125,28 @@ export default function link(scope, elem, attrs, ctrl) {
 
       body = '<div class="piechart-tooltip-small"><div class="piechart-tooltip-time">';
       body += '<div class="piechart-tooltip-value">' + _.escape(item.series.label) + ': ';
-      body += " (" + percent + "%)" + '</div>';
-      body += "</div></div>";
+      body += ' (' + percent + '%)' + '</div>';
+      body += '</div></div>';
 
       $tooltip.html(body).place_tt(pos.pageX + 20, pos.pageY);
     });
   }
 
   function render(incrementRenderCounter) {
-    if (!ctrl.pieData) { return; }
+    if (!ctrl.pieData) {
+      return;
+    }
 
     data = ctrl.pieData;
 
-      if (0 == ctrl.pieData.length) {
-        noDataPoints();
-      } else {
-        addPieChart();
-      }
+    if (0 == ctrl.pieData.length) {
+      noDataPoints();
+    } else {
+      addPieChart();
+    }
 
     if (incrementRenderCounter) {
       ctrl.renderingCompleted();
     }
   }
 }
-

@@ -1,99 +1,99 @@
-import { CanvasPanelCtrl } from "./canvas-metric";
-import { DistinctPoints, LegendValue } from "./distinct-points";
+import { CanvasPanelCtrl } from './canvas-metric';
+import { DistinctPoints, LegendValue } from './distinct-points';
 
-import _ from "lodash";
-import $ from "jquery";
-import moment from "moment";
-import kbn from "grafana/app/core/utils/kbn";
+import _ from 'lodash';
+import $ from 'jquery';
+import moment from 'moment';
+import kbn from 'grafana/app/core/utils/kbn';
 
-import appEvents from "grafana/app/core/app_events";
+import appEvents from 'grafana/app/core/app_events';
 
 const grafanaColors = [
-  "#7EB26D",
-  "#EAB839",
-  "#6ED0E0",
-  "#EF843C",
-  "#E24D42",
-  "#1F78C1",
-  "#BA43A9",
-  "#705DA0",
-  "#508642",
-  "#CCA300",
-  "#447EBC",
-  "#C15C17",
-  "#890F02",
-  "#0A437C",
-  "#6D1F62",
-  "#584477",
-  "#B7DBAB",
-  "#F4D598",
-  "#70DBED",
-  "#F9BA8F",
-  "#F29191",
-  "#82B5D8",
-  "#E5A8E2",
-  "#AEA2E0",
-  "#629E51",
-  "#E5AC0E",
-  "#64B0C8",
-  "#E0752D",
-  "#BF1B00",
-  "#0A50A1",
-  "#962D82",
-  "#614D93",
-  "#9AC48A",
-  "#F2C96D",
-  "#65C5DB",
-  "#F9934E",
-  "#EA6460",
-  "#5195CE",
-  "#D683CE",
-  "#806EB7",
-  "#3F6833",
-  "#967302",
-  "#2F575E",
-  "#99440A",
-  "#58140C",
-  "#052B51",
-  "#511749",
-  "#3F2B5B",
-  "#E0F9D7",
-  "#FCEACA",
-  "#CFFAFF",
-  "#F9E2D2",
-  "#FCE2DE",
-  "#BADFF4",
-  "#F9D9F9",
-  "#DEDAF7"
+  '#7EB26D',
+  '#EAB839',
+  '#6ED0E0',
+  '#EF843C',
+  '#E24D42',
+  '#1F78C1',
+  '#BA43A9',
+  '#705DA0',
+  '#508642',
+  '#CCA300',
+  '#447EBC',
+  '#C15C17',
+  '#890F02',
+  '#0A437C',
+  '#6D1F62',
+  '#584477',
+  '#B7DBAB',
+  '#F4D598',
+  '#70DBED',
+  '#F9BA8F',
+  '#F29191',
+  '#82B5D8',
+  '#E5A8E2',
+  '#AEA2E0',
+  '#629E51',
+  '#E5AC0E',
+  '#64B0C8',
+  '#E0752D',
+  '#BF1B00',
+  '#0A50A1',
+  '#962D82',
+  '#614D93',
+  '#9AC48A',
+  '#F2C96D',
+  '#65C5DB',
+  '#F9934E',
+  '#EA6460',
+  '#5195CE',
+  '#D683CE',
+  '#806EB7',
+  '#3F6833',
+  '#967302',
+  '#2F575E',
+  '#99440A',
+  '#58140C',
+  '#052B51',
+  '#511749',
+  '#3F2B5B',
+  '#E0F9D7',
+  '#FCEACA',
+  '#CFFAFF',
+  '#F9E2D2',
+  '#FCE2DE',
+  '#BADFF4',
+  '#F9D9F9',
+  '#DEDAF7',
 ]; // copied from public/app/core/utils/colors.ts because of changes in grafana 4.6.0
 //(https://github.com/grafana/grafana/blob/master/PLUGIN_DEV.md)
 
 const spans = {
-  s: { display: "seconds" },
-  m: { display: "minutes" },
-  h: { display: "hours" },
-  d: { display: "days" },
-  w: { display: "weeks" },
-  M: { display: "months" },
-  y: { display: "years" }
+  s: { display: 'seconds' },
+  m: { display: 'minutes' },
+  h: { display: 'hours' },
+  d: { display: 'days' },
+  w: { display: 'weeks' },
+  M: { display: 'months' },
+  y: { display: 'years' },
 };
 
 class DiscretePanelCtrl extends CanvasPanelCtrl {
-  static templateUrl = "partials/module.html";
+  static templateUrl = 'partials/module.html';
   static scrollable = true;
 
   defaults = {
-    display: "timeline", // or 'piechart'
+    display: 'timeline', // or 'piechart'
     rowHeight: 50,
-    valueMaps: [{ value: "null", op: "=", text: "N/A" }],
-    rangeMaps: [{ from: "null", to: "null", text: "N/A" }],
-    colorMaps: [{ text: "N/A", color: "#CCC" }],
-    metricNameColor: "#000000",
-    valueTextColor: "#000000",
-    timeTextColor: "#d8d9da",
-    crosshairColor: "#8F070C",
-    backgroundColor: "rgba(128,128,128,0.1)",
-    lineColor: "rgba(0,0,0,0.1)",
+    valueMaps: [{ value: 'null', op: '=', text: 'N/A' }],
+    rangeMaps: [{ from: 'null', to: 'null', text: 'N/A' }],
+    colorMaps: [{ text: 'N/A', color: '#CCC' }],
+    metricNameColor: '#000000',
+    valueTextColor: '#000000',
+    timeTextColor: '#d8d9da',
+    crosshairColor: '#8F070C',
+    backgroundColor: 'rgba(128,128,128,0.1)',
+    lineColor: 'rgba(0,0,0,0.1)',
     textSize: 24,
     textSizeTime: 12,
     extendLastValue: true,
@@ -101,7 +101,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     writeAllValues: false,
     writeMetricNames: false,
     showTimeAxis: true,
-    breakPoint: "50%",
+    breakPoint: '50%',
     alignAsTable: false,
     showLegend: true,
     showLegendNames: true,
@@ -109,53 +109,53 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     showLegendPercent: true,
     highlightOnMouseover: true,
     expandFromQueryS: 0,
-    legendSortBy: "-ms",
-    units: "short",
+    legendSortBy: '-ms',
+    units: 'short',
     timeOptions: [
       {
-        name: "Years",
-        value: "years"
+        name: 'Years',
+        value: 'years',
       },
       {
-        name: "Months",
-        value: "months"
+        name: 'Months',
+        value: 'months',
       },
       {
-        name: "Weeks",
-        value: "weeks"
+        name: 'Weeks',
+        value: 'weeks',
       },
       {
-        name: "Days",
-        value: "days"
+        name: 'Days',
+        value: 'days',
       },
       {
-        name: "Hours",
-        value: "hours"
+        name: 'Hours',
+        value: 'hours',
       },
       {
-        name: "Minutes",
-        value: "minutes"
+        name: 'Minutes',
+        value: 'minutes',
       },
       {
-        name: "Seconds",
-        value: "seconds"
+        name: 'Seconds',
+        value: 'seconds',
       },
       {
-        name: "Milliseconds",
-        value: "milliseconds"
-      }
+        name: 'Milliseconds',
+        value: 'milliseconds',
+      },
     ],
     timePrecision: {
-      name: "Minutes",
-      value: "minutes"
+      name: 'Minutes',
+      value: 'minutes',
     },
-    useTimePrecision: false
+    useTimePrecision: false,
   };
 
   annotations: any = [];
   data: DistinctPoints[] = [];
   legend: DistinctPoints[] = [];
-  pieData: any[];
+  pieData: any[] = [];
 
   externalPT = false;
   isTimeline = true;
@@ -176,13 +176,13 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     // defaults configs
     _.defaultsDeep(this.panel, this.defaults);
 
-    this.events.on("init-edit-mode", this.onInitEditMode.bind(this));
-    this.events.on("render", this.onRender.bind(this));
-    this.events.on("refresh", this.onRefresh.bind(this));
+    this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
+    this.events.on('render', this.onRender.bind(this));
+    this.events.on('refresh', this.onRefresh.bind(this));
 
-    this.events.on("data-received", this.onDataReceived.bind(this));
-    this.events.on("data-snapshot-load", this.onDataSnapshotLoad.bind(this));
-    this.events.on("data-error", this.onDataError.bind(this));
+    this.events.on('data-received', this.onDataReceived.bind(this));
+    this.events.on('data-snapshot-load', this.onDataSnapshotLoad.bind(this));
+    this.events.on('data-error', this.onDataError.bind(this));
   }
 
   onPanelInitialized() {
@@ -196,39 +196,23 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
   onDataError(err) {
     this.annotations = [];
-    console.log("onDataError", err);
+    console.log('onDataError', err);
   }
 
   onInitEditMode() {
     this.unitFormats = kbn.getUnitFormats();
 
-    this.addEditorTab(
-      "Options",
-      "public/plugins/natel-discrete-panel/partials/editor.options.html",
-      1
-    );
-    this.addEditorTab(
-      "Legend",
-      "public/plugins/natel-discrete-panel/partials/editor.legend.html",
-      3
-    );
-    this.addEditorTab(
-      "Colors",
-      "public/plugins/natel-discrete-panel/partials/editor.colors.html",
-      4
-    );
-    this.addEditorTab(
-      "Mappings",
-      "public/plugins/natel-discrete-panel/partials/editor.mappings.html",
-      5
-    );
+    this.addEditorTab('Options', 'public/plugins/natel-discrete-panel/partials/editor.options.html', 1);
+    this.addEditorTab('Legend', 'public/plugins/natel-discrete-panel/partials/editor.legend.html', 3);
+    this.addEditorTab('Colors', 'public/plugins/natel-discrete-panel/partials/editor.colors.html', 4);
+    this.addEditorTab('Mappings', 'public/plugins/natel-discrete-panel/partials/editor.mappings.html', 5);
     this.editorTabIndex = 1;
     this.refresh();
   }
 
   onRender() {
     switch (this.panel.display) {
-      case "timeline":
+      case 'timeline':
         if (this.data == null || !this.context) {
           return;
         }
@@ -245,25 +229,25 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
         this.renderingCompleted();
 
-      case "piechart":
+      case 'piechart':
 
       default:
     }
   }
   showLegandTooltip(pos, info) {
-    let body = '<div class="graph-tooltip-time">' + info.val + "</div>";
+    let body = '<div class="graph-tooltip-time">' + info.val + '</div>';
 
-    body += "<center>";
+    body += '<center>';
     if (info.count > 1) {
-      body += info.count + " times<br/>for<br/>";
+      body += info.count + ' times<br/>for<br/>';
     }
 
     body += this.formatDuration(moment.duration(info.ms));
 
     if (info.count > 1) {
-      body += "<br/>total";
+      body += '<br/>total';
     }
-    body += "</center>";
+    body += '</center>';
 
     this.$tooltip.html(body).place_tt(pos.pageX + 20, pos.pageY);
   }
@@ -301,7 +285,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     for (let i = 0; i < this.panel.valueMaps.length; i++) {
       const map = this.panel.valueMaps[i];
       // special null case
-      if (map.value === "null") {
+      if (map.value === 'null') {
         if (isNull) {
           return map.text;
         }
@@ -314,7 +298,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     }
 
     if (isNull) {
-      return "null";
+      return 'null';
     }
     return val;
   }
@@ -324,8 +308,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       return this.colorMap[val];
     }
     if (this._colorsPaleteCash[val] === undefined) {
-      const c =
-        grafanaColors[this._colorsPaleteCash.length % grafanaColors.length];
+      const c = grafanaColors[this._colorsPaleteCash.length % grafanaColors.length];
       this._colorsPaleteCash[val] = c;
       this._colorsPaleteCash.length++;
     }
@@ -333,8 +316,8 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   }
 
   randomColor() {
-    const letters = "ABCDE".split("");
-    let color = "#";
+    const letters = 'ABCDE'.split('');
+    let color = '#';
     for (let i = 0; i < 3; i++) {
       color += letters[Math.floor(Math.random() * letters.length)];
     }
@@ -352,13 +335,13 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     const expandTime = {
       unit: parts[2],
       span: spans[parts[2]],
-      amount: parseInt(parts[1], 10)
+      amount: parseInt(parts[1], 10),
     };
     // make shallow copy of scoped vars,
     // and add built in variables interval and interval_ms
     const scopedVars = Object.assign({}, this.panel.scopedVars, {
       __interval: { text: this.interval, value: this.interval },
-      __interval_ms: { text: this.intervalMs, value: this.intervalMs }
+      __interval_ms: { text: this.intervalMs, value: this.intervalMs },
     });
 
     let targets: [] = _.cloneDeep(this.panel.targets);
@@ -368,16 +351,13 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     targets.map((t: any) => {
       t.rawQuery = false;
       t.select.map((s: any) => {
-        s.push({ params: [], type: "last" });
+        s.push({ params: [], type: 'last' });
       });
     });
 
     range.to = _.cloneDeep(this.range.from);
     rawRange.to = _.cloneDeep(this.range.from);
-    const from = _.cloneDeep(this.range.from).subtract(
-      expandTime.amount,
-      expandTime.span.display
-    );
+    const from = _.cloneDeep(this.range.from).subtract(expandTime.amount, expandTime.span.display);
     range.from = from;
     rawRange.from = from;
 
@@ -392,7 +372,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       targets: targets,
       maxDataPoints: this.resolution,
       scopedVars: scopedVars,
-      cacheTimeout: this.panel.cacheTimeout
+      cacheTimeout: this.panel.cacheTimeout,
     };
 
     let result: any;
@@ -401,12 +381,12 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     } catch (err) {
       // if cancelled  keep loading set to true
       if (err.cancelled) {
-        console.log("Panel request cancelled", err);
+        console.log('Panel request cancelled', err);
         return;
       }
 
       this.loading = false;
-      this.error = err.message || "Request Error";
+      this.error = err.message || 'Request Error';
       this.inspector = { error: err };
 
       if (err.data) {
@@ -418,15 +398,12 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
         }
       }
 
-      this.events.emit("data-error", err);
-      console.log("Panel data error:", err);
+      this.events.emit('data-error', err);
+      console.log('Panel data error:', err);
     }
 
     if (!result || !result.data) {
-      console.log(
-        "Data source query result invalid, missing data field:",
-        result
-      );
+      console.log('Data source query result invalid, missing data field:', result);
       result = { data: [] };
     }
 
@@ -434,25 +411,10 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   }
 
   async onDataReceived(dataList) {
-    $(this.canvas).css("cursor", "pointer");
-
-    console.log("dataList: ", dataList);
+    $(this.canvas).css('cursor', 'pointer');
 
     const initialPoints = await this.getInitialDistinctPoints();
-    if (
-      dataList.length == 0 &&
-      initialPoints != undefined &&
-      initialPoints.data.length > 0
-    ) {
-      dataList = initialPoints.data;
-    }
-
-    const initialPoints = await this.getInitialDistinctPoints();
-    if (
-      dataList.length == 0 &&
-      initialPoints != undefined &&
-      initialPoints.data.length > 0
-    ) {
+    if (dataList.length == 0 && initialPoints != undefined && initialPoints.data.length > 0) {
       dataList = initialPoints.data;
     }
 
@@ -460,14 +422,8 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     _.forEach(dataList, (metric: any, index) => {
       if (metric.datapoints) {
         const res = new DistinctPoints(metric.target);
-        if (
-          initialPoints != undefined &&
-          initialPoints.data[index] != undefined
-        ) {
-          res.add(
-            this.range.from.unix() * 1000,
-            this.formatValue(initialPoints.data[index].datapoints[0][0])
-          );
+        if (initialPoints != undefined && initialPoints.data[index] != undefined) {
+          res.add(this.range.from.unix() * 1000, this.formatValue(initialPoints.data[index].datapoints[0][0]));
         }
         _.forEach(metric.datapoints, point => {
           res.add(point[1], this.formatValue(point[0]));
@@ -477,16 +433,13 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       } else if (metric.columns) {
         let timeIndex = -1;
         for (let i = 0; i < metric.columns.length; i++) {
-          if (
-            metric.columns[i].type === "time" ||
-            metric.columns[i].text === "Time"
-          ) {
+          if (metric.columns[i].type === 'time' || metric.columns[i].text === 'Time') {
             timeIndex = i;
             break;
           }
         }
         if (timeIndex < 0) {
-          throw new Error("Expected a time column from the table format");
+          throw new Error('Expected a time column from the table format');
         }
 
         for (let i = 0; i < metric.columns.length; i++) {
@@ -494,14 +447,8 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
             continue;
           }
           const res = new DistinctPoints(metric.columns[i].text);
-          if (
-            initialPoints != undefined &&
-            initialPoints.data[index] != undefined
-          ) {
-            res.add(
-              this.range.from.unix() * 1000,
-              this.formatValue(initialPoints.data[index].rows[0][i])
-            );
+          if (initialPoints != undefined && initialPoints.data[index] != undefined) {
+            res.add(this.range.from.unix() * 1000, this.formatValue(initialPoints.data[index].rows[0][i]));
           }
           for (let j = 0; j < metric.rows.length; j++) {
             const row = metric.rows[j];
@@ -511,7 +458,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
           data.push(res);
         }
       } else {
-        console.log("SKIP:", metric);
+        console.log('SKIP:', metric);
       }
     });
     this.data = data;
@@ -522,7 +469,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       .getAnnotations({
         dashboard: this.dashboard,
         panel: this.panel, // {id: 4}, //
-        range: this.range
+        range: this.range,
       })
       .then(
         result => {
@@ -538,10 +485,10 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
           this.loading = false;
           this.annotations = null;
           this.onRender();
-          console.log("ERRR", this);
+          console.log('ERRR', this);
         }
       );
-    let pieData = [];
+    let pieData: any[] = [];
     _.forEach(data, metric => {
       if (metric.legendInfo) {
         _.forEach(metric.legendInfo, info => {
@@ -549,7 +496,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
             const entry = {
               label: info.val,
               data: info.per,
-              color: this.getColor(info.val)
+              color: this.getColor(info.val),
             };
             pieData.push(entry);
           }
@@ -561,12 +508,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   }
 
   updateLegendMetrics(notify?: boolean) {
-    if (
-      !this.data ||
-      !this.panel.showLegend ||
-      this.panel.showLegendNames ||
-      this.data.length <= 1
-    ) {
+    if (!this.data || !this.panel.showLegend || this.panel.showLegendNames || this.data.length <= 1) {
       this.legend = this.data;
     } else {
       this.legend = [DistinctPoints.combineLegend(this.data, this)];
@@ -598,7 +540,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   }
 
   addColorMap(what) {
-    if (what === "curent") {
+    if (what === 'curent') {
       _.forEach(this.data, metric => {
         if (metric.legendInfo) {
           _.forEach(metric.legendInfo, info => {
@@ -611,7 +553,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
         }
       });
     } else {
-      this.panel.colorMaps.push({ text: "???", color: this.randomColor() });
+      this.panel.colorMaps.push({ text: '???', color: this.randomColor() });
     }
     this.updateColorInfo();
   }
@@ -623,7 +565,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   }
 
   addValueMap() {
-    this.panel.valueMaps.push({ value: "", op: "=", text: "" });
+    this.panel.valueMaps.push({ value: '', op: '=', text: '' });
   }
 
   removeRangeMap(rangeMap) {
@@ -633,15 +575,15 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   }
 
   addRangeMap() {
-    this.panel.rangeMaps.push({ from: "", to: "", text: "" });
+    this.panel.rangeMaps.push({ from: '', to: '', text: '' });
   }
 
   onConfigChanged(update = false) {
-    this.isTimeline = this.panel.display === "timeline";
-    this.isStacked = this.panel.display === "stacked";
+    this.isTimeline = this.panel.display === 'timeline';
+    this.isStacked = this.panel.display === 'stacked';
 
     this.formatter = null;
-    if (this.panel.units && "none" !== this.panel.units) {
+    if (this.panel.units && 'none' !== this.panel.units) {
       this.formatter = kbn.valueFormats[this.panel.units];
     }
 
@@ -679,21 +621,17 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       if (!value) {
         return carry;
       }
-      key = value < 2 ? key.replace(/s$/, "") : key;
+      key = value < 2 ? key.replace(/s$/, '') : key;
       return `${carry} ${value} ${key},`;
-    }, "");
+    }, '');
 
     return rs.substr(0, rs.length - 1);
   }
 
   getLegendDisplay(info, metric) {
     let disp = info.val;
-    if (
-      this.panel.showLegendPercent ||
-      this.panel.showLegendCounts ||
-      this.panel.showLegendTime
-    ) {
-      disp += " (";
+    if (this.panel.showLegendPercent || this.panel.showLegendCounts || this.panel.showLegendTime) {
+      disp += ' (';
       let hassomething = false;
       if (this.panel.showLegendTime) {
         disp += this.getLegendTime(info);
@@ -702,7 +640,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
       if (this.panel.showLegendPercent) {
         if (hassomething) {
-          disp += ", ";
+          disp += ', ';
         }
 
         let dec = this.panel.legendPercentDecimals;
@@ -721,11 +659,11 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
       if (this.panel.showLegendCounts) {
         if (hassomething) {
-          disp += ", ";
+          disp += ', ';
         }
         disp += this.getLegendCounts(info);
       }
-      disp += ")";
+      disp += ')';
     }
     return disp;
   }
@@ -749,7 +687,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   }
 
   getLegendCounts(info) {
-    return info.count + "x";
+    return info.count + 'x';
   }
 
   //------------------
@@ -766,17 +704,17 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       from = Math.min(this.mouse.down.ts, this.mouse.position.ts);
       to = Math.max(this.mouse.down.ts, this.mouse.position.ts);
       time = to - from;
-      val = "Zoom To:";
+      val = 'Zoom To:';
     }
 
-    let body = '<div class="graph-tooltip-time">' + val + "</div>";
+    let body = '<div class="graph-tooltip-time">' + val + '</div>';
 
-    body += "<center>";
-    body += this.dashboard.formatDate(moment(from)) + "<br/>";
-    body += "to<br/>";
-    body += this.dashboard.formatDate(moment(to)) + "<br/><br/>";
-    body += this.formatDuration(moment.duration(time)) + "<br/>";
-    body += "</center>";
+    body += '<center>';
+    body += this.dashboard.formatDate(moment(from)) + '<br/>';
+    body += 'to<br/>';
+    body += this.dashboard.formatDate(moment(to)) + '<br/><br/>';
+    body += this.formatDuration(moment.duration(time)) + '<br/>';
+    body += '</center>';
 
     let pageX = 0;
     let pageY = 0;
@@ -825,12 +763,8 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
         if (this.annotations && !isExternal && this._renderDimensions) {
           if (evt.pos.y > this._renderDimensions.rowsHeight - 5) {
-            const min = _.isUndefined(this.range.from)
-              ? null
-              : this.range.from.valueOf();
-            const max = _.isUndefined(this.range.to)
-              ? null
-              : this.range.to.valueOf();
+            const min = _.isUndefined(this.range.from) ? null : this.range.from.valueOf();
+            const max = _.isUndefined(this.range.to) ? null : this.range.to.valueOf();
             const width = this._renderDimensions.width;
 
             const anno = _.find(this.annotations, a => {
@@ -842,11 +776,9 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
               return annoX > mouseX - 5 && annoX < mouseX + 5;
             });
             if (anno) {
-              console.log("TODO, hover <annotation-tooltip>", anno);
+              console.log('TODO, hover <annotation-tooltip>', anno);
               // See: https://github.com/grafana/grafana/blob/master/public/app/plugins/panel/graph/jquery.flot.events.js#L10
-              this.$tooltip
-                .html(anno.text)
-                .place_tt(evt.evt.pageX + 20, evt.evt.pageY + 5);
+              this.$tooltip.html(anno.text).place_tt(evt.evt.pageX + 20, evt.evt.pageY + 5);
               return;
             }
           }
@@ -882,7 +814,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
   onMouseClicked(where, event) {
     if (event.metaKey === true || event.ctrlKey === true) {
-      console.log("TODO? Create Annotation?", where, event);
+      console.log('TODO? Create Annotation?', where, event);
       return;
     }
 
@@ -890,7 +822,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     if (pt && pt.start) {
       const range = {
         from: moment.utc(pt.start),
-        to: moment.utc(pt.start + pt.ms)
+        to: moment.utc(pt.start + pt.ms),
       };
       this.timeSrv.setTime(range);
       this.clear();
@@ -899,7 +831,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
   onMouseSelectedRange(range, event) {
     if (event.metaKey === true || event.ctrlKey === true) {
-      console.log("TODO? Create range annotation?", range, event);
+      console.log('TODO? Create range annotation?', range, event);
       return;
     }
     this.timeSrv.setTime(range);
@@ -910,8 +842,8 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     this.mouse.position = null;
     this.mouse.down = null;
     this.hoverPoint = null;
-    $(this.canvas).css("cursor", "wait");
-    appEvents.emit("graph-hover-clear");
+    $(this.canvas).css('cursor', 'wait');
+    appEvents.emit('graph-hover-clear');
     this.render();
   }
 
@@ -922,9 +854,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     const rows = (this._renderDimensions.rows = this.data.length);
     const rowHeight = (this._renderDimensions.rowHeight = this.panel.rowHeight);
     const rowsHeight = (this._renderDimensions.rowsHeight = rowHeight * rows);
-    const timeHeight = this.panel.showTimeAxis
-      ? 14 + this.panel.textSizeTime
-      : 0;
+    const timeHeight = this.panel.showTimeAxis ? 14 + this.panel.textSizeTime : 0;
     const height = (this._renderDimensions.height = rowsHeight + timeHeight);
     const width = (this._renderDimensions.width = rect.width);
     this._renderDimensions.height = height;
@@ -933,7 +863,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     if (!this.range) {
       this.range = {
         to: 2000,
-        from: 1000
+        from: 1000,
       };
     }
 
@@ -970,7 +900,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
       this._renderDimensions.matrix.push({
         y: top,
-        positions: positions
+        positions: positions,
       });
 
       top += rowHeight;
@@ -986,20 +916,14 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
         if (j + 1 === this.data[i].changes.length) {
           return this.data[i].changes[j].start <= this.mouse.position.ts;
         }
-        return (
-          this.data[i].changes[j].start <= this.mouse.position.ts &&
-          this.mouse.position.ts < this.data[i].changes[j + 1].start
-        );
+        return this.data[i].changes[j].start <= this.mouse.position.ts && this.mouse.position.ts < this.data[i].changes[j + 1].start;
       },
       mouseX: function(i, j) {
         const row = this._renderDimensions.matrix[i];
         if (j + 1 === row.positions.length) {
           return row.positions[j] <= this.mouse.position.x;
         }
-        return (
-          row.positions[j] <= this.mouse.position.x &&
-          this.mouse.position.x < row.positions[j + 1]
-        );
+        return row.positions[j] <= this.mouse.position.x && this.mouse.position.x < row.positions[j + 1];
       },
       metric: function(i) {
         return this.data[i] === this._selectedMetric;
@@ -1009,28 +933,28 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
           return false;
         }
         return this._selectedLegendItem.val === this._getVal(i, j);
-      }
+      },
     };
 
     function getPredicate() {
       if (this._selectedLegendItem !== undefined) {
-        return "legendItem";
+        return 'legendItem';
       }
       if (this._selectedMetric !== undefined) {
-        return "metric";
+        return 'metric';
       }
       if (this.mouse.down !== null) {
-        return "all";
+        return 'all';
       }
       if (this.panel.highlightOnMouseover && this.mouse.position != null) {
         if (this.isTimeline) {
-          return "crosshairHover";
+          return 'crosshairHover';
         }
         if (this.isStacked) {
-          return "mouseX";
+          return 'mouseX';
         }
       }
-      return "all";
+      return 'all';
     }
 
     const pn = getPredicate.bind(this)();
@@ -1050,8 +974,8 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     this.canvas.width = this._renderDimensions.width * this._devicePixelRatio;
     this.canvas.height = this._renderDimensions.height * this._devicePixelRatio;
 
-    $(this.canvas).css("width", this._renderDimensions.width + "px");
-    $(this.canvas).css("height", this._renderDimensions.height + "px");
+    $(this.canvas).css('width', this._renderDimensions.width + 'px');
+    $(this.canvas).css('height', this._renderDimensions.height + 'px');
 
     this.context.scale(this._devicePixelRatio, this._devicePixelRatio);
   }
@@ -1088,12 +1012,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
         if (!this._selectionMatrix[i][j]) {
           ctx.globalAlpha = 0.3;
         }
-        ctx.fillRect(
-          currentX,
-          matrix[i].y,
-          nextX - currentX,
-          this._renderDimensions.rowHeight
-        );
+        ctx.fillRect(currentX, matrix[i].y, nextX - currentX, this._renderDimensions.rowHeight);
         ctx.globalAlpha = globalAlphaTemp;
       }
 
@@ -1111,9 +1030,8 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
   _renderLabels() {
     const ctx = this.context;
     ctx.lineWidth = 1;
-    ctx.textBaseline = "middle";
-    ctx.font =
-      this.panel.textSize + 'px "Open Sans", Helvetica, Arial, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.font = this.panel.textSize + 'px "Open Sans", Helvetica, Arial, sans-serif';
 
     const offset = 2;
     const rowHeight = this._renderDimensions.rowHeight;
@@ -1132,7 +1050,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       let maxTextSpot = this._renderDimensions.width;
       if (this.panel.writeMetricNames) {
         ctx.fillStyle = this.panel.metricNameColor;
-        ctx.textAlign = "left";
+        ctx.textAlign = 'left';
         ctx.fillText(metric.name, offset, labelPositionMetricName);
         minTextSpot = offset + ctx.measureText(metric.name).width + 2;
       }
@@ -1143,17 +1061,14 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       if (this.mouse.position) {
         for (let j = 0; j < positions.length; j++) {
           if (positions[j] <= this.mouse.position.x) {
-            if (
-              j >= positions.length - 1 ||
-              positions[j + 1] >= this.mouse.position.x
-            ) {
+            if (j >= positions.length - 1 || positions[j + 1] >= this.mouse.position.x) {
               let val = this._getVal(i, j);
               ctx.fillStyle = this.panel.valueTextColor;
-              ctx.textAlign = "left";
+              ctx.textAlign = 'left';
               hoverTextStart = positions[j] + offset;
               if (hoverTextStart < minTextSpot) {
                 hoverTextStart = minTextSpot + 2;
-                val = ": " + val;
+                val = ': ' + val;
               }
 
               ctx.fillText(val, hoverTextStart, labelPositionValue);
@@ -1168,23 +1083,18 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
       if (this.panel.writeLastValue) {
         const val = this._getVal(i, positions.length - 1);
         ctx.fillStyle = this.panel.valueTextColor;
-        ctx.textAlign = "right";
+        ctx.textAlign = 'right';
         const txtinfo = ctx.measureText(val);
         const xval = this._renderDimensions.width - offset - txtinfo.width;
         if (xval > hoverTextEnd) {
-          ctx.fillText(
-            val,
-            this._renderDimensions.width - offset,
-            labelPositionLastValue
-          );
-          maxTextSpot =
-            this._renderDimensions.width - ctx.measureText(val).width - 10;
+          ctx.fillText(val, this._renderDimensions.width - offset, labelPositionLastValue);
+          maxTextSpot = this._renderDimensions.width - ctx.measureText(val).width - 10;
         }
       }
 
       if (this.panel.writeAllValues) {
         ctx.fillStyle = this.panel.valueTextColor;
-        ctx.textAlign = "left";
+        ctx.textAlign = 'left';
         for (let j = 0; j < positions.length; j++) {
           const val = this._getVal(i, j);
           let nextX = this._renderDimensions.width;
@@ -1227,8 +1137,8 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     const xmin = Math.min(this.mouse.position.x, this.mouse.down.x);
     const xmax = Math.max(this.mouse.position.x, this.mouse.down.x);
 
-    ctx.fillStyle = "rgba(110, 110, 110, 0.5)";
-    ctx.strokeStyle = "rgba(110, 110, 110, 0.5)";
+    ctx.fillStyle = 'rgba(110, 110, 110, 0.5)';
+    ctx.strokeStyle = 'rgba(110, 110, 110, 0.5)';
     ctx.beginPath();
     ctx.fillRect(xmin, 0, xmax - xmin, height);
     ctx.strokeRect(xmin, 0, xmax - xmin, height);
@@ -1248,31 +1158,27 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
     const headerColumnIndent = 0; // header inset (zero for now)
 
-    ctx.font =
-      this.panel.textSizeTime + 'px "Open Sans", Helvetica, Arial, sans-serif';
+    ctx.font = this.panel.textSizeTime + 'px "Open Sans", Helvetica, Arial, sans-serif';
     ctx.fillStyle = this.panel.timeTextColor;
-    ctx.textAlign = "left";
+    ctx.textAlign = 'left';
     ctx.strokeStyle = this.panel.timeTextColor;
-    ctx.textBaseline = "top";
+    ctx.textBaseline = 'top';
     ctx.setLineDash([7, 5]); // dashes are 5px and spaces are 3px
     ctx.lineDashOffset = 0;
 
-    const min = _.isUndefined(this.range.from)
-      ? null
-      : this.range.from.valueOf();
+    const min = _.isUndefined(this.range.from) ? null : this.range.from.valueOf();
     const max = _.isUndefined(this.range.to) ? null : this.range.to.valueOf();
-    const minPxInterval = ctx.measureText("12/33 24:59").width * 2;
+    const minPxInterval = ctx.measureText('12/33 24:59').width * 2;
     const estNumTicks = width / minPxInterval;
     const estTimeInterval = (max - min) / estNumTicks;
     const timeResolution = this.getTimeResolution(estTimeInterval);
     const pixelStep = (timeResolution / (max - min)) * width;
     let nextPointInTime = this.roundDate(min, timeResolution) + timeResolution;
-    let xPos =
-      headerColumnIndent + ((nextPointInTime - min) / (max - min)) * width;
+    let xPos = headerColumnIndent + ((nextPointInTime - min) / (max - min)) * width;
 
     const timeFormat = this.time_format(max - min, timeResolution / 1000);
     let displayOffset = 0;
-    if (this.dashboard.timezone === "utc") {
+    if (this.dashboard.timezone === 'utc') {
       displayOffset = new Date().getTimezoneOffset() * 60000;
     }
 
@@ -1322,14 +1228,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     // Draw a Circle around the point if showing a tooltip
     if (this.externalPT && rows > 1) {
       ctx.beginPath();
-      ctx.arc(
-        this.mouse.position.x,
-        this.mouse.position.y,
-        3,
-        0,
-        2 * Math.PI,
-        false
-      );
+      ctx.arc(this.mouse.position.x, this.mouse.position.y, 3, 0, 2 * Math.PI, false);
       ctx.fillStyle = this.panel.crosshairColor;
       ctx.fill();
       ctx.lineWidth = 1;
@@ -1352,20 +1251,17 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     const top = this._renderDimensions.rowsHeight;
 
     const headerColumnIndent = 0; // header inset (zero for now)
-    ctx.font =
-      this.panel.textSizeTime + 'px "Open Sans", Helvetica, Arial, sans-serif';
-    ctx.fillStyle = "#7FE9FF";
-    ctx.textAlign = "left";
-    ctx.strokeStyle = "#7FE9FF";
+    ctx.font = this.panel.textSizeTime + 'px "Open Sans", Helvetica, Arial, sans-serif';
+    ctx.fillStyle = '#7FE9FF';
+    ctx.textAlign = 'left';
+    ctx.strokeStyle = '#7FE9FF';
 
-    ctx.textBaseline = "top";
+    ctx.textBaseline = 'top';
     ctx.setLineDash([3, 3]);
     ctx.lineDashOffset = 0;
     ctx.lineWidth = 2;
 
-    const min = _.isUndefined(this.range.from)
-      ? null
-      : this.range.from.valueOf();
+    const min = _.isUndefined(this.range.from) ? null : this.range.from.valueOf();
     const max = _.isUndefined(this.range.to) ? null : this.range.to.valueOf();
     //let xPos = headerColumnIndent;
 
@@ -1378,43 +1274,23 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
         ctx.strokeStyle = anno.source.iconColor;
       } else if (anno.annotation === undefined) {
         // grafana annotation
-        ctx.fillStyle = "#7FE9FF";
-        ctx.strokeStyle = "#7FE9FF";
+        ctx.fillStyle = '#7FE9FF';
+        ctx.strokeStyle = '#7FE9FF';
       } else {
         isAlert = true;
-        ctx.fillStyle = "#EA0F3B"; //red
-        ctx.strokeStyle = "#EA0F3B";
+        ctx.fillStyle = '#EA0F3B'; //red
+        ctx.strokeStyle = '#EA0F3B';
       }
 
-      this._drawVertical(
-        ctx,
-        anno.time,
-        min,
-        max,
-        headerColumnIndent,
-        top,
-        width,
-        isAlert
-      );
+      this._drawVertical(ctx, anno.time, min, max, headerColumnIndent, top, width, isAlert);
 
       //do the TO rangeMap
       if (anno.isRegion) {
-        this._drawVertical(
-          ctx,
-          anno.timeEnd,
-          min,
-          max,
-          headerColumnIndent,
-          top,
-          width,
-          isAlert
-        );
+        this._drawVertical(ctx, anno.timeEnd, min, max, headerColumnIndent, top, width, isAlert);
 
         //draw horizontal line at bottom
-        const xPosStart =
-          headerColumnIndent + ((anno.time - min) / (max - min)) * width;
-        const xPosEnd =
-          headerColumnIndent + ((anno.timeEnd - min) / (max - min)) * width;
+        const xPosStart = headerColumnIndent + ((anno.time - min) / (max - min)) * width;
+        const xPosEnd = headerColumnIndent + ((anno.timeEnd - min) / (max - min)) * width;
 
         // draw ticks
         ctx.beginPath();
@@ -1428,7 +1304,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
         //do transparency
         if (isAlert === false) {
           ctx.save();
-          ctx.fillStyle = "#7FE9FF";
+          ctx.fillStyle = '#7FE9FF';
           ctx.globalAlpha = 0.2;
           ctx.fillRect(xPosStart, 0, xPosEnd - xPosStart, rowHeight);
           ctx.stroke();
@@ -1438,16 +1314,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
     });
   }
 
-  _drawVertical(
-    ctx,
-    timeVal,
-    min,
-    max,
-    headerColumnIndent,
-    top,
-    width,
-    isAlert
-  ) {
+  _drawVertical(ctx, timeVal, min, max, headerColumnIndent, top, width, isAlert) {
     const xPos = headerColumnIndent + ((timeVal - min) / (max - min)) * width;
 
     // draw ticks
@@ -1465,7 +1332,7 @@ class DiscretePanelCtrl extends CanvasPanelCtrl {
 
     // draw alert label
     if (isAlert === true) {
-      const dateStr = "\u25B2";
+      const dateStr = '\u25B2';
       const xOffset = ctx.measureText(dateStr).width / 2;
       ctx.fillText(dateStr, xPos - xOffset, top + 10);
     }
